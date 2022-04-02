@@ -4,7 +4,7 @@ Python FTP client
 ## About
 Based on https://github.com/nmattis/python-ftp  
 Includes encryption and directory listing as well as deleting server files  
-
+Also includes a few functions for testing server and client downloading capabilities
 ## Usage
 
 To start a server instance listening:
