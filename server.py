@@ -1,5 +1,6 @@
 import csv
 import socket
+from cryptography.fernet import Fernet
 
 from client_thread import ClientThread
 
@@ -29,6 +30,7 @@ class Server():
                 auth_data = client_socket.recv(self.buffer_size)
                 print("Recieved: {}".format(auth_data))
                 recv_data = auth_data.decode('utf-8').strip().split(",")
+                print(recv_data)
 
                 if len(recv_data) != 3:
                     print("The data recieved from client {} is wrong.".format(client_ip))
@@ -40,6 +42,7 @@ class Server():
                 else:
                     user_info = recv_data[1].split(":")
                     pass_info = recv_data[2].split(":")
+                    print(pass_info)
                     if self.__authenticate_user(user_info[1], pass_info[1]):
                         message = "Success"
                         client_socket.sendall(message.encode('utf-8'))
@@ -58,11 +61,22 @@ class Server():
         for t in created_threads:
             t.join()
 
+    def load_key():
+        return open("secret.key", "rb").read()
+
+    def decrypt_message(self, message):
+        key = load_key()
+        f = Fernet(key)
+        decrypted_message = f.decrypt(message)
+        return decrypted_message.decode()
+        print(decrypted_message.decode())
+
     def __authenticate_user(self, user_name, passwd):
         for user in self.allowed_users:
             if user_name == user["name"]:
-                return user["passwd"] == passwd
-        
+                print(user_name)
+                return decrypt_message(user["passwd"]) == passwd
+            
         return False
 
     def __load_users(self):
