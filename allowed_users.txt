@@ -1,0 +1,4 @@
+name,passwd
+malik,password
+admin,pass
+test,test
